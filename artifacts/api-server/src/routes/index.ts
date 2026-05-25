@@ -5,10 +5,12 @@ import productsRouter from "./products";
 import statsRouter from "./stats";
 import logsRouter from "./logs";
 import exportsRouter from "./exports";
+import uploadRouter from "./upload";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(uploadRouter);
 router.use(statsRouter);
 router.use(logsRouter);
 router.use(jobsRouter);
