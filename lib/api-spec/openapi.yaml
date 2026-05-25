@@ -1,36 +1,646 @@
-openapi: 3.1.0
+openapi: "3.1.0"
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: "8.0.0"
+  description: PdfExpert v8 — PDF Processing SaaS Platform API
+
 servers:
   - url: /api
-    description: Base API path
-tags:
-  - name: health
-    description: Health operations
+
 paths:
   /healthz:
     get:
-      operationId: healthCheck
-      tags: [health]
+      operationId: getHealth
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
-          description: Healthy
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /stats:
+    get:
+      operationId: getStats
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /queue:
+    get:
+      operationId: getQueue
+      summary: Get processing queue status
+      responses:
+        "200":
+          description: Queue status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueueStatus"
+
+  /jobs:
+    get:
+      operationId: listJobs
+      summary: List all processing jobs
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, processing, completed, failed, cancelled]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobList"
+    post:
+      operationId: createJob
+      summary: Create a new PDF processing job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobInput"
+      responses:
+        "201":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: Bad request
+
+  /jobs/{id}:
+    get:
+      operationId: getJob
+      summary: Get job details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteJob
+      summary: Delete a job and its data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /jobs/{id}/process:
+    post:
+      operationId: processJob
+      summary: Start processing a job
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Processing started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "404":
+          description: Not found
+
+  /jobs/{id}/cancel:
+    post:
+      operationId: cancelJob
+      summary: Cancel a running job
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "404":
+          description: Not found
+
+  /jobs/{id}/logs:
+    get:
+      operationId: getJobLogs
+      summary: Get logs for a specific job
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LogEntry"
+
+  /logs:
+    get:
+      operationId: getLogs
+      summary: Get all system logs
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [info, warn, error, debug]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        "200":
+          description: System logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LogEntry"
+
+  /products:
+    get:
+      operationId: listProducts
+      summary: List extracted products
+      parameters:
+        - name: jobId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: brand
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: category
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductList"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      summary: Get product detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProduct
+      summary: Update product data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteProduct
+      summary: Delete a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /export:
+    post:
+      operationId: exportProducts
+      summary: Export products to file format
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportRequest"
+      responses:
+        "200":
+          description: Export result with download URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportResult"
+        "400":
+          description: Bad request
+
+  /exports:
+    get:
+      operationId: listExports
+      summary: List previous exports
+      responses:
+        "200":
+          description: List of exports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExportResult"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
+          enum: [ok]
 
+    DashboardStats:
+      type: object
+      required:
+        - totalJobs
+        - completedJobs
+        - activeJobs
+        - failedJobs
+        - totalProducts
+        - totalImages
+        - totalExports
+        - processingRate
+        - avgProcessingTime
+      properties:
+        totalJobs:
+          type: integer
+        completedJobs:
+          type: integer
+        activeJobs:
+          type: integer
+        failedJobs:
+          type: integer
+        totalProducts:
+          type: integer
+        totalImages:
+          type: integer
+        totalExports:
+          type: integer
+        processingRate:
+          type: number
+          description: Jobs per hour
+        avgProcessingTime:
+          type: number
+          description: Average processing time in seconds
+
+    QueueStatus:
+      type: object
+      required: [pending, processing, completed, failed, workers, queueHealth]
+      properties:
+        pending:
+          type: integer
+        processing:
+          type: integer
+        completed:
+          type: integer
+        failed:
+          type: integer
+        workers:
+          type: integer
+        queueHealth:
+          type: string
+          enum: [healthy, degraded, critical]
+
+    Job:
+      type: object
+      required:
+        - id
+        - filename
+        - originalName
+        - status
+        - progress
+        - totalPages
+        - processedPages
+        - productCount
+        - imageCount
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+        filename:
+          type: string
+        originalName:
+          type: string
+        fileSize:
+          type: ["integer", "null"]
+        status:
+          type: string
+          enum: [pending, processing, completed, failed, cancelled]
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        totalPages:
+          type: integer
+        processedPages:
+          type: integer
+        productCount:
+          type: integer
+        imageCount:
+          type: integer
+        error:
+          type: ["string", "null"]
+        ocrEnabled:
+          type: boolean
+        imageExtractionEnabled:
+          type: boolean
+        aiCorrectionEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    JobList:
+      type: object
+      required: [items, total, limit, offset]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Job"
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    JobInput:
+      type: object
+      required: [originalName]
+      properties:
+        originalName:
+          type: string
+          minLength: 1
+        fileSize:
+          type: ["integer", "null"]
+        ocrEnabled:
+          type: boolean
+          default: true
+        imageExtractionEnabled:
+          type: boolean
+          default: true
+        aiCorrectionEnabled:
+          type: boolean
+          default: true
+
+    Product:
+      type: object
+      required:
+        - id
+        - jobId
+        - rawName
+        - cleanName
+        - imageCount
+        - createdAt
+      properties:
+        id:
+          type: integer
+        jobId:
+          type: integer
+        rawName:
+          type: string
+        cleanName:
+          type: string
+        sku:
+          type: ["string", "null"]
+        brand:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        subcategory:
+          type: ["string", "null"]
+        color:
+          type: ["string", "null"]
+        material:
+          type: ["string", "null"]
+        size:
+          type: ["string", "null"]
+        slug:
+          type: ["string", "null"]
+        imageCount:
+          type: integer
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductImage"
+        createdAt:
+          type: string
+          format: date-time
+
+    ProductUpdate:
+      type: object
+      properties:
+        cleanName:
+          type: string
+        sku:
+          type: ["string", "null"]
+        brand:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        subcategory:
+          type: ["string", "null"]
+        color:
+          type: ["string", "null"]
+        material:
+          type: ["string", "null"]
+        size:
+          type: ["string", "null"]
+
+    ProductList:
+      type: object
+      required: [items, total, limit, offset]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    ProductImage:
+      type: object
+      required: [id, productId, filename, createdAt]
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        filename:
+          type: string
+        width:
+          type: ["integer", "null"]
+        height:
+          type: ["integer", "null"]
+        fileSize:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    LogEntry:
+      type: object
+      required: [id, level, message, timestamp]
+      properties:
+        id:
+          type: integer
+        jobId:
+          type: ["integer", "null"]
+        level:
+          type: string
+          enum: [info, warn, error, debug]
+        message:
+          type: string
+        meta:
+          type: ["string", "null"]
+        timestamp:
+          type: string
+          format: date-time
+
+    ExportRequest:
+      type: object
+      required: [format]
+      properties:
+        format:
+          type: string
+          enum: [csv, json, xlsx, shopify, woocommerce]
+        jobId:
+          type: ["integer", "null"]
+        productIds:
+          type: ["array", "null"]
+          items:
+            type: integer
+        includeImages:
+          type: boolean
+          default: false
+
+    ExportResult:
+      type: object
+      required: [id, format, filename, productCount, status, createdAt]
+      properties:
+        id:
+          type: integer
+        format:
+          type: string
+        filename:
+          type: string
+        downloadUrl:
+          type: ["string", "null"]
+        productCount:
+          type: integer
+        status:
+          type: string
+          enum: [generating, ready, failed]
+        createdAt:
+          type: string
+          format: date-time

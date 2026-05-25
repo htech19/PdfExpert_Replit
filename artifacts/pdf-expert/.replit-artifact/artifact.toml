@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PdfExpert v8"
+version = "1.0.0"
+id = "artifacts/pdf-expert"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25931
+
+[services.development]
+run = "pnpm --filter @workspace/pdf-expert run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pdf-expert", "run", "build" ]
+publicDir = "artifacts/pdf-expert/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25931"
+BASE_PATH = "/"

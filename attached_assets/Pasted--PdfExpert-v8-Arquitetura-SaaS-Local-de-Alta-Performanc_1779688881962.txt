@@ -1,0 +1,699 @@
+# PdfExpert v8 — Arquitetura SaaS + Local de Alta Performance para Replit
+
+## Nome Oficial do Projeto
+
+**PdfExpert v8**
+
+## Diretório Oficial
+
+```txt
+C:\Users\hunlock\Documents\New project\PdfExpert v8
+```
+
+---
+
+# Visão Estratégica
+
+O PdfExpert v8 será uma plataforma híbrida:
+
+* Execução LOCAL ultra otimizada
+* Plataforma SaaS escalável
+* Compatível com Replit usando baixo consumo de créditos
+* Deploy automatizado no GitHub
+* Pipeline inteligente para processamento massivo de PDFs
+* Extração avançada de imagens em alta resolução
+* IA para correção automática de nomes dos produtos
+* Sistema resiliente com logs, fallback e recuperação automática
+
+O objetivo NÃO é apenas extrair imagens.
+
+O objetivo é criar:
+
+> Uma plataforma profissional de automação comercial para transformar catálogos PDF em bancos estruturados de produtos prontos para ecommerce, marketplaces e ERPs.
+
+---
+
+# Objetivos Principais
+
+## O sistema deve:
+
+### 1. Processar PDFs automaticamente
+
+* PDFs únicos
+* Múltiplos PDFs simultaneamente
+* Pastas inteiras
+* Catálogos pesados
+* PDFs escaneados
+* PDFs híbridos
+
+---
+
+### 2. Extrair imagens em qualidade máxima
+
+O sistema deve:
+
+* Extrair imagens originais sem compressão
+* Preservar resolução nativa
+* Priorizar imagens acima de 4K
+* Melhorar nitidez automaticamente
+* Corrigir ruído
+* Remover fundo opcionalmente
+* Detectar imagens duplicadas
+* Reorganizar imagens por produto
+
+---
+
+### 3. Detectar nome correto do produto
+
+A IA deve:
+
+* Ler títulos
+* Corrigir OCR
+* Remover códigos inúteis
+* Identificar SKU
+* Detectar marca
+* Padronizar nomes
+* Gerar slug SEO
+* Criar nome comercial limpo
+
+Exemplo:
+
+```txt
+Entrada:
+REF 8472-X CAB MDF PREM BR 2P
+
+Saída:
+Armário MDF Premium Branco 2 Portas
+```
+
+---
+
+### 4. Criar estrutura pronta para ecommerce
+
+O sistema deve gerar:
+
+```txt
+/products
+    /marca
+        /produto
+            imagem1.png
+            imagem2.png
+            data.json
+```
+
+---
+
+### 5. Deploy automático GitHub
+
+Toda execução SaaS deve:
+
+* Fazer commit automático
+* Organizar branch
+* Versionar processamento
+* Gerar changelog
+* Subir resultados automaticamente
+
+---
+
+# Arquitetura Inteligente para Replit
+
+## Objetivo Principal
+
+Reduzir drasticamente:
+
+* uso de CPU
+* uso de RAM
+* consumo de créditos do Replit
+* processamento desnecessário
+
+---
+
+# Estratégia de Baixo Consumo
+
+## Regras obrigatórias
+
+### 1. Processamento sob demanda
+
+Nada roda continuamente.
+
+Tudo funciona por:
+
+* fila
+* eventos
+* tarefas assíncronas
+
+---
+
+### 2. Zero IA pesada local
+
+NÃO usar:
+
+* LLM gigantes
+* modelos pesados
+* GPU obrigatória
+
+USAR:
+
+* OCR leve
+* regex inteligente
+* heurística otimizada
+* cache agressivo
+
+---
+
+### 3. Pipeline modular
+
+Cada módulo executa separadamente:
+
+```txt
+PDF → OCR → Imagem → Nome → Exportação
+```
+
+Isso evita:
+
+* travamentos
+* consumo contínuo
+* estouro de memória
+
+---
+
+### 4. Cache inteligente
+
+Salvar:
+
+* OCR já processado
+* hashes das imagens
+* nomes já corrigidos
+* PDFs já convertidos
+
+Evita retrabalho.
+
+---
+
+### 5. Processamento incremental
+
+Ao alterar apenas 1 PDF:
+
+* processar somente ele
+* não reconstruir tudo
+
+---
+
+# Stack Recomendada
+
+## Backend Principal
+
+### Python FastAPI
+
+Motivos:
+
+* rápido
+* leve
+* excelente no Replit
+* baixo uso de RAM
+* ótimo para automação
+
+---
+
+## Frontend
+
+### Next.js minimalista
+
+Modo:
+
+* SSR leve
+* dashboard simples
+* foco em performance
+
+---
+
+## OCR
+
+### Tesseract otimizado
+
+Com:
+
+* pré-processamento OpenCV
+* grayscale
+* sharpen
+* threshold adaptativo
+
+---
+
+## Banco de Dados
+
+### SQLite local
+
+### PostgreSQL no SaaS
+
+---
+
+## Fila
+
+### Redis opcional
+
+OU:
+
+fila interna leve em JSON.
+
+---
+
+# Estrutura Completa do Projeto
+
+```txt
+PdfExpert v8/
+│
+├── app/
+├── api/
+├── core/
+├── engine/
+├── ocr/
+├── extractor/
+├── ai/
+├── storage/
+├── cache/
+├── logs/
+├── temp/
+├── output/
+├── scripts/
+├── frontend/
+├── config/
+├── github/
+├── tests/
+├── docker/
+├── local/
+└── SaaS/
+```
+
+---
+
+# Estrutura de Execução Local
+
+## Obrigatório ter:
+
+```txt
+RUN_PDFEXPERT_V8.bat
+```
+
+---
+
+# Requisitos da BAT Blindada
+
+A BAT deve:
+
+## 1. Nunca fechar automaticamente
+
+Obrigatório:
+
+```bat
+pause
+```
+
+OU:
+
+loop persistente.
+
+---
+
+## 2. Mostrar logs em tempo real
+
+Exibir:
+
+* status
+* erros
+* processamento
+* consumo
+* PDFs ativos
+
+---
+
+## 3. Criar logs automáticos
+
+Salvar em:
+
+```txt
+/logs
+```
+
+Formato:
+
+```txt
+log_YYYY_MM_DD.txt
+```
+
+---
+
+## 4. Recuperação automática
+
+Se algo falhar:
+
+* reiniciar serviço
+* manter janela aberta
+* exibir stack trace
+
+---
+
+## 5. Verificação automática
+
+Antes de iniciar:
+
+* validar Python
+* validar dependências
+* validar portas
+* validar diretórios
+* validar banco
+
+---
+
+# Exemplo de BAT Profissional
+
+```bat
+@echo off
+title PdfExpert v8
+color 0A
+
+:START
+cls
+
+echo ======================================
+echo        PDFEXPERT V8 STARTING
+echo ======================================
+
+echo.
+echo Verificando ambiente...
+
+python --version
+
+if errorlevel 1 (
+    echo Python nao encontrado.
+    pause
+    goto END
+)
+
+echo.
+echo Iniciando sistema...
+
+echo Logs em:
+echo logs\runtime.log
+
+echo.
+
+python main.py >> logs\runtime.log 2>&1
+
+if errorlevel 1 (
+    echo.
+    echo ERRO DETECTADO
+    echo Verifique logs\runtime.log
+    echo.
+    pause
+    goto START
+)
+
+:END
+pause
+```
+
+---
+
+# Funcionalidades Premium
+
+## OCR Inteligente Multi-Camada
+
+O sistema deve:
+
+* detectar idioma
+* corrigir inclinação
+* limpar ruído
+* aumentar contraste
+* detectar tabelas
+* identificar blocos
+
+---
+
+# IA de Reconhecimento de Produto
+
+Deve detectar:
+
+* categoria
+* marca
+* linha
+* tamanho
+* cor
+* material
+* SKU
+
+---
+
+# Extração Avançada de Imagem
+
+## Recursos premium
+
+### Auto upscale
+
+Usar:
+
+* ESRGAN leve
+* processamento opcional
+* execução sob demanda
+
+---
+
+### Deduplicação inteligente
+
+Usar:
+
+* perceptual hash
+* comparação visual
+
+---
+
+### Organização automática
+
+Separar:
+
+```txt
+Marca > Categoria > Produto
+```
+
+---
+
+# SaaS Profissional
+
+## Recursos
+
+### Multiusuário
+
+### Login JWT
+
+### Dashboard administrativo
+
+### Controle de consumo
+
+### Upload massivo
+
+### Histórico de processamento
+
+### API pública
+
+### Webhooks
+
+### Exportação:
+
+* CSV
+* JSON
+* XLSX
+* Shopify
+* WooCommerce
+* Magento
+
+---
+
+# Painel Administrativo
+
+## Deve mostrar
+
+* PDFs processados
+* fila ativa
+* erros
+* uso do sistema
+* usuários online
+* imagens extraídas
+* consumo mensal
+
+---
+
+# Sistema Anti-Travamento
+
+## Obrigatório
+
+### Watchdog interno
+
+Monitorar:
+
+* memória
+* CPU
+* filas travadas
+* processos mortos
+
+---
+
+### Recuperação automática
+
+Se módulo travar:
+
+* reiniciar somente módulo
+* não derrubar aplicação inteira
+
+---
+
+# Segurança
+
+## SaaS
+
+### Rate limit
+
+### JWT
+
+### Hash bcrypt
+
+### Proteção upload
+
+### Limite tamanho PDF
+
+### Sandbox temporário
+
+---
+
+# Otimizações Críticas para Replit
+
+## Modo econômico
+
+Criar:
+
+```txt
+LOW_RESOURCE_MODE=true
+```
+
+---
+
+## Desabilitar automaticamente
+
+* animações
+* OCR pesado
+* upscale automático
+* processamento paralelo extremo
+
+---
+
+## Suspensão inteligente
+
+Se inativo:
+
+* congelar workers
+* salvar estado
+* reduzir uso CPU
+
+---
+
+# Integração GitHub
+
+## Automação completa
+
+Cada processamento:
+
+* gera commit
+* cria release
+* salva histórico
+* envia output
+
+---
+
+# Estrutura API
+
+## Endpoints
+
+```txt
+POST /upload
+POST /process
+GET  /status
+GET  /products
+GET  /logs
+POST /export
+```
+
+---
+
+# Pipeline Completo
+
+```txt
+Upload PDF
+    ↓
+OCR inteligente
+    ↓
+Extração imagem
+    ↓
+Correção IA
+    ↓
+Organização produto
+    ↓
+Exportação
+    ↓
+GitHub Deploy
+```
+
+---
+
+# Objetivo Final do Projeto
+
+Transformar o PdfExpert v8 em:
+
+* plataforma SaaS profissional
+* motor automatizado de catálogo
+* sistema empresarial escalável
+* ferramenta para ecommerce industrial
+* solução pronta para monetização
+
+---
+
+# Requisitos Obrigatórios de Desenvolvimento
+
+## O projeto deve:
+
+* iniciar sem erros
+* funcionar localmente
+* funcionar no Replit
+* consumir poucos créditos
+* ter logs completos
+* ter recuperação automática
+* ter deploy simplificado
+* ser modular
+* ser escalável
+* suportar milhares de PDFs
+
+---
+
+# Prioridade Máxima
+
+## Performance + Estabilidade
+
+O sistema deve priorizar:
+
+1. Baixo consumo
+2. Alta estabilidade
+3. Recuperação automática
+4. Logs completos
+5. Organização extrema
+6. Modularidade
+7. Escalabilidade SaaS
+
+---
+
+# Resultado Esperado
+
+O PdfExpert v8 deve parecer:
+
+* produto comercial premium
+* sistema enterprise
+* automação industrial de catálogos
+* plataforma moderna de IA aplicada a PDFs
+* SaaS profissional pronto para clientes reais
