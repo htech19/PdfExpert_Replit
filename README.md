@@ -174,7 +174,7 @@ pnpm --filter @workspace/db run push
 pnpm run build
 ```
 
-## Estrutura do projeto
+## Estrutura do projetO
 
 ```
 ├── artifacts/
