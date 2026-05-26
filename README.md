@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PdfExpert v8
 
 Plataforma SaaS para processamento automatizado de catálogos PDF — extração de imagens, OCR, correção de nomes de produtos via IA e exportação para e-commerce.
@@ -192,3 +193,6 @@ pnpm run build
 ├── railway.toml             # Config deploy API (Railway)
 └── .env.example             # Exemplo de variáveis de ambiente
 ```
+=======
+# PdfExpert_Replit
+>>>>>>> d71f13ca3929f56da651523c478dcb035c787e43
