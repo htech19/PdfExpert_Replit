@@ -47,3 +47,24 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment — nunca commitar .env real, apenas .env.example
+.env
+.env.local
+.env.*.local
+artifacts/**/.env
+artifacts/**/.env.local
+
+# Uploads de PDF (só .gitkeep é versionado)
+artifacts/api-server/uploads/*
+!artifacts/api-server/uploads/.gitkeep
+
+# Build outputs
+artifacts/api-server/dist/
+artifacts/pdf-expert/dist/
+lib/*/dist/
+lib/*/*.tsbuildinfo
+
+# Logs
+*.log
+logs/

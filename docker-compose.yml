@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pdfexpert-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pdfexpert
+    ports:
+      - "5432:5432"
+    volumes:
+      - pdfexpert_pgdata:/var/lib/postgresql/data
+
+volumes:
+  pdfexpert_pgdata:
