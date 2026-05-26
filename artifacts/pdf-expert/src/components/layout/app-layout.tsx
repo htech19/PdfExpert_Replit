@@ -1,9 +1,11 @@
 import { Link, useLocation } from "wouter";
+import { useUser, useClerk } from "@clerk/react";
 import {
   Activity,
   Box,
   Download,
   FileText,
+  LogOut,
   TerminalSquare,
   Zap,
 } from "lucide-react";
@@ -17,8 +19,20 @@ const NAV_ITEMS = [
   { href: "/logs", label: "System Logs", icon: TerminalSquare },
 ];
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
+
+  const initials = isLoaded && user
+    ? (user.firstName?.[0] ?? user.emailAddresses[0]?.emailAddress?.[0] ?? "U").toUpperCase()
+    : "U";
+  const displayName = isLoaded && user
+    ? user.firstName ?? user.emailAddresses[0]?.emailAddress?.split("@")[0] ?? "User"
+    : "User";
+  const role = "Admin";
 
   return (
     <div className="flex min-h-screen w-full bg-background dark text-foreground">
@@ -26,11 +40,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <aside className="w-64 border-r border-border bg-sidebar flex-shrink-0 flex flex-col">
         <div className="h-16 flex items-center px-6 border-b border-border">
           <Zap className="w-6 h-6 text-primary mr-2" />
-          <span className="font-bold text-lg tracking-tight text-white">PdfExpert <span className="text-primary text-xs ml-1 font-mono align-top">v8</span></span>
+          <span className="font-bold text-lg tracking-tight text-white">
+            PdfExpert{" "}
+            <span className="text-primary text-xs ml-1 font-mono align-top">v8</span>
+          </span>
         </div>
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
-            const isActive = location === item.href || (item.href !== "/" && location.startsWith(item.href));
+            const isActive =
+              location === item.href ||
+              (item.href !== "/" && location.startsWith(item.href));
             return (
               <Link
                 key={item.href}
@@ -39,10 +58,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   "flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   isActive
                     ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
                 )}
               >
-                <item.icon className={cn("w-4 h-4", isActive ? "text-primary" : "text-muted-foreground")} />
+                <item.icon
+                  className={cn(
+                    "w-4 h-4",
+                    isActive ? "text-primary" : "text-muted-foreground",
+                  )}
+                />
                 <span>{item.label}</span>
               </Link>
             );
@@ -50,13 +74,29 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="p-4 border-t border-border">
           <div className="flex items-center space-x-3 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-xs font-bold text-primary">OP</span>
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              {isLoaded && user?.imageUrl ? (
+                <img
+                  src={user.imageUrl}
+                  alt={displayName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-xs font-bold text-primary">{initials}</span>
+              )}
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">Operator</span>
-              <span className="text-xs text-muted-foreground">Admin</span>
+            <div className="flex flex-col flex-1 min-w-0">
+              <span className="text-sm font-medium truncate">{displayName}</span>
+              <span className="text-xs text-muted-foreground">{role}</span>
             </div>
+            <button
+              type="button"
+              title="Sign out"
+              onClick={() => signOut({ redirectUrl: basePath || "/" })}
+              className="text-muted-foreground hover:text-foreground transition-colors ml-1 flex-shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>

@@ -30,7 +30,7 @@ export default function JobsList() {
 
   const { data, isLoading } = useListJobs(
     statusFilter ? { status: statusFilter as "pending" | "processing" | "completed" | "failed" | "cancelled", limit: 50 } : { limit: 50 },
-    { query: { refetchInterval: 3000 } }
+    { query: { refetchInterval: 3000 } as any }
   );
 
   const uploadJob = useMutation({

@@ -27,7 +27,7 @@ export default function LogsViewer() {
 
   const { data: logs, isLoading, refetch, isFetching } = useGetLogs(
     { ...(level ? { level } : {}), limit },
-    { query: { refetchInterval: 3000 } }
+    { query: { refetchInterval: 3000 } as any }
   );
 
   const LEVELS: (Level | undefined)[] = [undefined, "info", "warn", "error", "debug"];

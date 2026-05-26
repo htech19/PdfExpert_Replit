@@ -5,9 +5,9 @@ import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
 
 export default function Dashboard() {
-  const { data: stats } = useGetStats({ query: { refetchInterval: 2000 } });
-  const { data: queue } = useGetQueue({ query: { refetchInterval: 2000 } });
-  const { data: jobsData } = useListJobs({ limit: 5 }, { query: { refetchInterval: 2000 } });
+  const { data: stats } = useGetStats({ query: { refetchInterval: 2000 } as any });
+  const { data: queue } = useGetQueue({ query: { refetchInterval: 2000 } as any });
+  const { data: jobsData } = useListJobs({ limit: 5 }, { query: { refetchInterval: 2000 } as any });
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">

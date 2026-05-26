@@ -32,7 +32,7 @@ export default function JobDetail() {
   });
 
   const { data: logs } = useGetJobLogs(id, {
-    query: { enabled: !!id, refetchInterval: 2000 }
+    query: { enabled: !!id, refetchInterval: 2000 } as any
   });
 
   const { data: products } = useListProducts({ jobId: id, limit: 6 }, {

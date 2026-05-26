@@ -30,7 +30,7 @@ export default function ExportCenter() {
   const [format, setFormat] = useState<"csv" | "json" | "xlsx" | "shopify" | "woocommerce">("csv");
   const [includeImages, setIncludeImages] = useState(false);
 
-  const { data: exports } = useListExports({ query: { refetchInterval: 5000 } });
+  const { data: exports } = useListExports({ query: { refetchInterval: 5000 } as any });
 
   const exportProducts = useExportProducts({
     mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getListExportsQueryKey() }) }
@@ -126,10 +126,12 @@ export default function ExportCenter() {
                       ) : (
                         <span className="text-xs text-red-400">Failed</span>
                       )}
-                      {exp.downloadUrl && (
-                        <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-border/50">
-                          <Download className="w-3 h-3" /> Download
-                        </Button>
+                      {exp.downloadUrl && exp.status === "ready" && (
+                        <a href={exp.downloadUrl} download={exp.filename}>
+                          <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-border/50">
+                            <Download className="w-3 h-3" /> Download
+                          </Button>
+                        </a>
                       )}
                     </div>
                   </div>
